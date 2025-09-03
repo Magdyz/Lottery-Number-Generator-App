@@ -1,6 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+const { width } = Dimensions.get("window");
+const scale = (size) => (width / 375) * size;
 
 const HelpModal = () => {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -10,67 +20,89 @@ const HelpModal = () => {
   };
 
   return (
-    <View style={styles.iconContiner}>
-      <TouchableOpacity onPress={toggleModal}>
-        {/* Changed from "ios-help-circle-outline" */}
+    <>
+      <TouchableOpacity onPress={toggleModal} style={styles.iconContainer}>
         <Ionicons
           name="help-circle-outline"
-          size={35}
-          color={"#023e8a"}
-        ></Ionicons>
+          size={scale(38)}
+          color={"#FFFFFF"} // Changed to white for high contrast
+        />
       </TouchableOpacity>
-      <Modal visible={isModalVisible} animationType="fade">
-        <View style={styles.modal}>
-          {
-            <View>
-              <Text style={styles.modalText}>
-                {" "}
-                Need help using our lottery number generator app? No problem!
-                Simply tap any of the three buttons to get a random set of
-                numbers for Euro Millions, Lotto, and Set for Life. Use the app
-                as many times as you want to generate your own lucky numbers.
-              </Text>
-              <Text style={styles.modalText}>
-                {" "}
-                No more relying on quick picks or lucky dips - take control of
-                your lottery destiny!
-              </Text>
-            </View>
-          }
-          <TouchableOpacity style={styles.closeIcon} onPress={toggleModal}>
-            {/* Changed from "ios-close-circle-outline" */}
-            <Ionicons name="close-circle-outline" size={35}></Ionicons>
-          </TouchableOpacity>
-        </View>
+
+      <Modal
+        visible={isModalVisible}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={toggleModal}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPressOut={toggleModal}
+        >
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>
+              Need help? Simply tap any of the three buttons to get a random set
+              of numbers for Euro Millions, Lotto, and Set for Life.
+            </Text>
+            <Text style={styles.modalText}>
+              No more relying on quick picks or lucky dips - take control of
+              your lottery destiny!
+            </Text>
+            <TouchableOpacity style={styles.closeIcon} onPress={toggleModal}>
+              <Ionicons
+                name="close-circle-outline"
+                size={scale(40)}
+                color="#555"
+              />
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
       </Modal>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  modal: {
+  iconContainer: {
+    position: "absolute",
+    bottom: scale(25),
+    right: scale(25),
+    zIndex: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+  },
+  modalOverlay: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ebdb65",
-    padding: 20,
-    color: "#003566",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  iconContiner: {
-    position: "absolute",
-    top: "85%",
-    right: "4%",
-    opacity: 0.3,
+  modalContent: {
+    width: width * 0.9,
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    borderRadius: scale(20),
+    padding: scale(20),
+    paddingTop: scale(40),
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   closeIcon: {
     position: "absolute",
-    top: "7%",
-    right: "7%",
+    top: scale(10),
+    right: scale(10),
   },
   modalText: {
-    fontSize: 25,
-    padding: 5,
+    fontSize: scale(18),
     textAlign: "center",
+    marginBottom: scale(15),
+    color: "#333",
   },
 });
 
