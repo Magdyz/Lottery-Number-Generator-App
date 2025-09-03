@@ -27,5 +27,14 @@
     "web": {
       "favicon": "./assets/favicon.png"
     }
+  },
+  "dependencies": {
+    "expo": "^53.0.22",
+    "@expo-google-fonts/monofett": "^0.2.2",
+    "expo-linear-gradient": "~14.1.5",
+    "expo-splash-screen": "~0.30.10",
+    "expo-status-bar": "~2.2.3",
+    "react": "19.0.0",
+    "react-native": "0.79.5"
   }
 }
