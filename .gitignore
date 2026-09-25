@@ -12,3 +12,20 @@ web-build/
 
 # macOS
 .DS_Store
+
+# Signing credentials — never commit
+credentials.json
+credentials/
+
+# macOS resource forks / IDE
+._*
+.idea/
+
+# Android / Gradle
+.gradle/
+build/
+local.properties
+keystore.properties
+*.apk
+*.aab
+.kotlin/

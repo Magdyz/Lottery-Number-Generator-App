@@ -1,75 +1,82 @@
-# Lottery Number Generator App
+# Lucky Lottery
 
-<img src="https://raw.githubusercontent.com/Magdyz/LuckyLottery/main/assets/icon.png" width="200" height="200">
+<img src="https://raw.githubusercontent.com/Magdyz/LuckyLottery/main/assets/icon.png" width="160">
 
-![JavaScript](https://img.shields.io/badge/-JavaScript-yellow)
-[![React Native](https://img.shields.io/badge/-React_Native-61dafb)](https://reactnative.dev/)
-[![HTML](https://img.shields.io/badge/-HTML-orange)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![CSS](https://img.shields.io/badge/-CSS-blueviolet)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-[![Android App Store](https://img.shields.io/badge/-Android_App_Store-green)](https://play.google.com/store)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0%2B-7f52ff)](https://kotlinlang.org/)
+[![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-1.7%2B-4285f4)](https://developer.android.com/jetpack/compose)
+[![Android](https://img.shields.io/badge/Android-24%2B-3ddc84)](https://play.google.com/store/apps/details?id=com.magzz.LuckyLottery)
+[![License](https://img.shields.io/badge/License-MIT-success)](LICENSE)
 
-### Lottery Number Generator App
-[![Website](https://img.shields.io/website?url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.magzz.LuckyLottery)](https://play.google.com/store/apps/details?id=com.magzz.LuckyLottery)
+Offline random number generator for UK National Lottery games. Generates cryptographically secure numbers with optional smart picks to reduce jackpot splitting.
 
-
-This React Native application serves as a Lottery Number Generator, providing users with a simple and intuitive interface to generate random lottery numbers. The project not only focuses on the functionality but also adheres to Android Play Store requirements for a seamless user experience.
-
-## Technologies Used
-
-- **React Native:** The entire application is built using React Native, a JavaScript framework for building mobile applications. It ensures cross-platform compatibility and efficient development.
-
-- **JavaScript:** The core language used for the logic and functionality of the application. JavaScript enables dynamic behavior and interactions within the app.
-
-- **Redux:** State management in the application is handled using Redux, ensuring a predictable state container for managing the application's data.
-
-- **Android Play Store Guidelines:** The app complies with the Android Play Store requirements, including design guidelines, permissions, and other specifications to ensure a smooth publishing process.
+[Download on Google Play](https://play.google.com/store/apps/details?id=com.magzz.LuckyLottery)
 
 ## Features
 
-- **Random Number Generation:** Users can generate random lottery numbers based on their preferences, such as the range of numbers and the total count.
+**Supported Games**
+- EuroMillions: 5 from 50 + 2 Lucky Stars from 12
+- Lotto: 6 from 59
+- Set For Life: 5 from 47 + 1 Life Ball from 10
+- Thunderball: 5 from 39 + 1 Thunderball from 14
 
-- **Intuitive UI/UX:** The application provides a user-friendly interface, making it easy for users to navigate and interact with the lottery number generation process.
+**Number Generation**
+- Cryptographically secure random generator (java.security.SecureRandom) with unbiased rejection sampling
+- Smart picks: avoids commonly played patterns (runs of 3+ consecutive numbers, evenly spaced sequences, all numbers ≤31). Does not change odds of winning, reduces chance of sharing a jackpot
+- Fresh picks: never repeats a line you generated before; limits overlap with your last 10 lines
+- Generate 1, 3 or 5 lines at a time
 
-- **Redux State Management:** Utilizing Redux ensures a centralized and predictable state management system, enhancing the scalability and maintainability of the application.
+**Convenience & Privacy**
+- Full history with saved (starred) lines
+- Share lines via built-in sharing
+- Fully offline: no account, no ads, no tracking
+- History and settings stored in private JSON file on device; Android backup disabled so nothing leaves the device
 
-## Installation
+## Technology
 
-To run the app locally, follow these steps:
+- **Kotlin** with **Jetpack Compose** (Material 3)
+- No third-party dependencies beyond AndroidX
+- minSdk 24, targetSdk 36: Release APK ≈1.2 MB, no native libraries (16 KB page-size compliant), no permissions requested
+- Project structure:
+  - `app/src/main/java/com/magzz/luckylottery/`
+    - `MainActivity.kt` (app shell + floating tab bar)
+    - `AppViewModel.kt` (state management)
+    - `engine/Generator.kt` (pure Kotlin random number generator)
+    - `data/Games.kt` (game definitions with computed odds)
+    - `data/HistoryStore.kt` (persistent history with AtomicFile)
+    - `ui/screens/` (Generate, History, About)
+    - `ui/components/Common.kt` (Ball, GlassCard, and shared composables)
+    - `ui/theme/Theme.kt` (Material 3 theming)
+  - `app/src/test/` (unit tests)
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Magdyz/LuckyLottery.git
-   ```
+## Build
 
-2. Install dependencies:
-   ```bash
-   cd LuckyLottery
-   npm install
-   ```
+Requires JDK 17+ and Android SDK (API 36+).
 
-3. Run the app on your local machine:
-   ```bash
-   npm start
-   ```
+```bash
+./gradlew assembleDebug      # Build debug APK
+./gradlew testDebugUnitTest  # Run unit tests
+./gradlew bundleRelease      # Build release bundle for Play Console
+```
 
-## Contributing
+**Release Signing**
 
-If you'd like to contribute to the project, please follow these guidelines:
+Copy `keystore.properties.example` to `keystore.properties` (gitignored) and fill in the upload keystore path, passwords, and alias. Without it, the release build is unsigned.
 
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Make your changes and submit a pull request.
+## Maintainer Warnings
 
-Ensure that your contributions align with the project's coding standards and guidelines.
+**Critical for Play Store updates:**
+- **applicationId** must always be `com.magzz.LuckyLottery` (defined in `app/build.gradle.kts`). Changing it breaks updates for existing users.
+- **Upload key** must be the same keystore used in the original Expo/EAS builds. Download it via `eas credentials` if needed. Using a different key prevents existing users from updating.
+- **versionCode** (in `app/build.gradle.kts`, currently 25; the last Expo build was 24) must go up by at least 1 for every release.
+
+Without these precautions, existing users cannot update to new versions.
+
+## Responsible Play
+
+Lucky Lottery is for ages 18+. This app is not affiliated with The National Lottery, Allwyn or EuroMillions. For support and resources, visit [BeGambleAware.org](https://www.begambleaware.org/).
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
-
-## Acknowledgments
-
-- The project is inspired by the need for a simple and reliable lottery number generator.
-
-Feel free to reach out for any questions, bug reports, or suggestions!
+MIT. See [LICENSE](LICENSE) for details.
 
 
